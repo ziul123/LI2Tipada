@@ -43,9 +43,17 @@ data Exp
     | EStr String
     | ETrue
     | EFalse
+    | ENil
+    | ECons Exp Exp
+    | EIsNil Exp
+    | EHead Exp
+    | ETail Exp
+    | EPair Exp Exp
+    | EFst Exp
+    | ESnd Exp
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data Type = Tbool | Tint | Tvoid | TStr | TFun Function
+data Type = Tbool | Tint | Tvoid | TStr | TFun Function | TList Type | TPair Type Type
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 newtype Ident = Ident String
