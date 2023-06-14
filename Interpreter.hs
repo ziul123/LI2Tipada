@@ -42,24 +42,25 @@ eval environment x = case x of
     EFalse -> ValorBool False
     EInt n -> ValorInt n
     EVar id -> lookupDeepValue environment id
-    Call id lexp ->
-        lookupShallowValue
-            (execute ([paramBindings], (snd environment)) (SBlock stms))
-            (Ident "return")
-      where
-        ValorFun (Fun _ _ decls stms) = lookupShallowFunction environment id
-        paramBindings =
-            zip
-                (map (\(Dec _ id) -> id) decls)
-                (map (eval environment) lexp)
+    Call id lexp -> case id of
+        Ident "head" -> head . l $ eval environment $ head lexp
+        Ident "tail" -> ValorList $ tail . l $ eval environment $ head lexp
+        Ident "isNil" -> ValorBool $ null . l $ eval environment $ head lexp
+        Ident "fst" -> fst . p $ eval environment $ head lexp
+        Ident "snd" -> snd . p $ eval environment $ head lexp
+        Ident func ->
+            lookupShallowValue
+                (execute ([paramBindings], (snd environment)) (SBlock stms))
+                (Ident "return")
+            where
+                ValorFun (Fun _ _ decls stms) = lookupShallowFunction environment (Ident func)
+                paramBindings =
+                    zip
+                        (map (\(Dec _ id) -> id) decls)
+                        (map (eval environment) lexp)
     ENil -> ValorList []
     ECons e1 e2 -> ValorList $ (eval environment e1) : (l (eval environment e2))
-    EIsNil exp -> ValorBool $ null $ l $ eval environment exp
-    EHead exp -> head $ l $ eval environment exp
-    ETail exp -> ValorList $ tail $ l $ eval environment exp
-    EPair e1 e2 -> ValorPair (eval environment e1) (eval environment e2)
-    EFst exp -> fst $ p $ eval environment exp
-    ESnd exp -> snd $ p $ eval environment exp
+    EPair e1 e2 -> ValorPair ((eval environment e1), (eval environment e2))
 
 data Valor
     = ValorInt
@@ -86,7 +87,7 @@ initVal Tbool = ValorBool False
 initVal Tint = ValorInt 0
 initVal TStr = ValorStr ""
 initVal (TList _) = ValorList []
-initVal (TPair ft st) = ValorPair (initVal ft) (initVal st)
+initVal (TPair ft st) = ValorPair ((initVal ft), (initVal st))
 
 instance Show Valor where
     show (ValorBool b) = show b
