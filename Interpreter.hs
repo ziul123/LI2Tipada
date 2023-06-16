@@ -43,23 +43,26 @@ eval environment x = case x of
     EInt n -> ValorInt n
     EVar id -> lookupDeepValue environment id
     Call id lexp -> case id of
-        Ident "head" -> head . l $ eval environment $ head lexp
-        Ident "tail" -> ValorList $ tail . l $ eval environment $ head lexp
-        Ident "isNil" -> ValorBool $ null . l $ eval environment $ head lexp
-        Ident "fst" -> fst . p $ eval environment $ head lexp
-        Ident "snd" -> snd . p $ eval environment $ head lexp
+        Ident "head" -> head list
+        Ident "tail" -> ValorList (tail list)
+        Ident "isNil" -> ValorBool (null list)
+        Ident "fst" -> f
+        Ident "snd" -> s
         Ident func ->
             lookupShallowValue
                 (execute ([paramBindings], (snd environment)) (SBlock stms))
                 (Ident "return")
-            where
-                ValorFun (Fun _ _ decls stms) = lookupShallowFunction environment (Ident func)
-                paramBindings =
-                    zip
-                        (map (\(Dec _ id) -> id) decls)
-                        (map (eval environment) lexp)
+        where
+            arg = eval environment (head lexp)
+            list = l arg
+            (f,s) = p arg
+            ValorFun (Fun _ _ decls stms) = lookupShallowFunction environment id
+            paramBindings =
+                zip
+                    (map (\(Dec _ id) -> id) decls)
+                    (map (eval environment) lexp)
     ENil -> ValorList []
-    ECons e1 e2 -> ValorList $ (eval environment e1) : (l (eval environment e2))
+    ECons e1 e2 -> ValorList ((eval environment e1) : (l (eval environment e2)))
     EPair e1 e2 -> ValorPair ((eval environment e1), (eval environment e2))
 
 data Valor
