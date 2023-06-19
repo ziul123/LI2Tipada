@@ -1,0 +1,12 @@
+
+int main () {
+  (String,int) p1;
+  (String,int) p2;
+  p1 = ("Maria", 20);
+  p2 = ("Jose", 30);
+  int soma;
+  soma = snd (p1) + snd (p2);
+  return soma;
+}
+
+
