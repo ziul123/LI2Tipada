@@ -33,12 +33,16 @@ EVar. Exp7  ::= Ident ;
 EStr. Exp7  ::= String ;
 ETrue. Exp7 ::= "true" ;
 EFalse. Exp7 ::= "false" ;
+EPair. Exp7 ::= "(" Exp "," Exp ")" ;
+EList. Exp7 ::= "[" [Exp] "]" ;
 
 Tbool. Type ::= "bool" ;
 Tint.  Type ::= "int" ;
 Tvoid. Type ::= "void"  ;
 TStr.  Type ::= "String" ;
 TFun.  Type ::= Function ;
+TPair. Type ::= "(" Type "," Type ")" ;
+TList. Type ::= "[" Type "]" ;
 
 
 coercions Exp 7 ;

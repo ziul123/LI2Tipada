@@ -1,0 +1,29 @@
+
+int main () {
+  [int] lista;
+  lista = [1,2,3,4];
+  int somaLista;
+  somaLista  = soma (lista);
+  return somaLista;
+}
+
+int soma ([int] lst) {
+  int s;
+  int e;
+  s = 0;
+  e = 0;
+  
+  while (!(isNil (lst))) {
+    e = head (lst);
+	s = s + e;
+	lst = tail (lst); 
+  }
+  return s; 
+}  
+  
+  
+
+
+
+
+
